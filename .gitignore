@@ -207,4 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 # Tests
-tests/data/output/
+tests/output/

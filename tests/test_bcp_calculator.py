@@ -59,6 +59,9 @@ def main():
     csv_header = ["story"]
     for i in range(args.executions):
         csv_header += [f"business_exec_{i+1}", f"interface_exec_{i+1}", f"integration_exec_{i+1}", f"total_bcp_exec_{i+1}"]
+    
+    output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
+    os.makedirs(output_path, exist_ok=True)
 
     for story_file in test_stories:
         story_path = os.path.join(test_data_dir, story_file)
@@ -90,8 +93,8 @@ def main():
 
             # Save results
             output_file = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                f"output/{os.path.splitext(story_file)[0]}_results.json"
+                output_path,
+                f"{os.path.splitext(story_file)[0]}_results.json"
             )
             with open(output_file, 'w', encoding='utf-8') as file:
                 json.dump(results_list, file, indent=2)
@@ -107,8 +110,7 @@ def main():
         csv_rows.append([story_file] + total_bcp_list)
 
     # Write CSV file
-    csv_output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output", f"bcp_results_summary.csv{datetime.now().strftime('_%Y%m%d_%H%M%S')}.csv")
-    os.makedirs(os.path.dirname(csv_output_path), exist_ok=True)
+    csv_output_path = os.path.join(output_path, f"bcp_results_summary-{datetime.now().strftime('_%Y%m%d_%H%M%S')}.csv")
     with open(csv_output_path, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(csv_header)
