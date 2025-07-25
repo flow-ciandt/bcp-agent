@@ -1,0 +1,75 @@
+# system:
+You are a user story formatting assistant.
+
+# user:
+Your task is to convert a provided user story draft into a VALID JSON using the information explicitly written in the draft.
+
+## Steps
+Please strictly follow the instructions below to convert the draft into a valid JSON object. This will ensure all fields are consistently and accurately completed.
+
+1. Read the entire draft carefully.
+2. Identify the user role, the goal, and the purpose. Fill each one explicitly.
+3. If the draft explains the context or problem, summarize it in up to 50 words. If not, return null.
+4. Extract any rules, restrictions, or business conditions mentioned. If none are found, return null.
+5. Look for step-by-step expectations or behaviors the system should follow. If nothing is listed, return an empty list [].
+6. If the draft mentions performance, usability, accessibility, or other quality standards, list them. If not, return [].
+7. Identify any integration with APIs, services, databases, devices, or external tools. If none, return [].
+8. Build a GIVEN,WHEN,THEN test case. If any part is missing, fill with null.
+9. Identify developer tasks clearly stated. If none, return [].
+10. Return a valid JSON object, with all fields filled according to the draft or set to null / [].
+
+## Rules
+DO NOT invent any information that is not present in the draft, and fill the fields through the draft interpretation.
+If any field or section is not mentioned, use null (for strings) or an empty list [] (for arrays), depending on the field type.
+The output must be a syntactically valid JSON object.
+
+### Result Format:
+
+Each story should follow the example format below, with sections in the content field:
+
+{
+  "User View": {
+    "AS": "<name>",
+    "I WANT": "<short description of the story>",
+    "SO THAT": "<user objective in up to 15 words>"
+  },
+  "Business Narrative": "<description of the problem to be solved in up to 50 words>",
+  "Requirements and Business Rules": "<specific rules that must be applied>",
+  "Acceptance Criteria": [
+    "<step-by-step actions to perform the story>",
+    "<detailed, step-by-step instructions>"
+  ],
+  "Non-Functional Requirements": [
+    "<non-functional requirements like accessibility, performance, etc.>"
+  ],
+  "Integrations (Boundaries)": [
+    "<Any integration identified, such as service calls, api integrations, access to external systems or devices.>"
+  ],
+  "Test Plan": {
+    "GIVEN": "<initial condition>",
+    "WHEN": "<user action or event>",
+    "THEN": "<expected outcome>"
+  },
+  "Tasks": [
+    "<tasks that need to be performed by the developer in order to fulfill the story requirements>"
+  ]
+}
+
+### Example:
+
+```json
+{% raw %}[
+  {
+    "User View\nAS a System Architect\nI WANT to update user roles and permissions to allow users to add amendments\nSO THAT I can manage user access control and amendment capabilities.\n\n## Business Narrative\nEnable the ability to update user roles and permissions to allow users to add amendments, ensuring the system's functionality aligns with the epic's requirements.\n\n## Requirements and business rules\n1. Roles and permissions should be customizable based on user type and access needs.\n2. Permission levels should be defined for different types of amendments.\n\n## Acceptance Criteria\n1. As an admin, I can access the user management interface.\n2. As an admin, I can assign specific roles to users.\n3. As an admin, I can define permissions for each role, including the ability to add amendments.\n\n## Non-Functional Requirements\n- The system should maintain high security standards for user role and permission management.\n\n## Integrations (boundaries)\n- The update should integrate with the existing user interface and security protocols.\n\n## Test Plan\nGIVEN the admin has access to the user management interface\nWHEN the admin assigns roles and permissions to users\nTHEN the roles and permissions are updated correctly.\n\n## Tasks\n1. Change the configuration file."
+  },
+  {
+    "User View\nAS a User\nI WANT to add and manage amendments\nSO THAT I can update information as needed.\n\n## Business Narrative\nWithin the system, users should be able to add and manage amendments for improved data accuracy and relevance.\n\n## Requirements and business rules\n1. Only authorized users with specific permissions can add or manage amendments.\n2. Amendments should be documented with relevant details and timestamps.\n\n## Acceptance Criteria\n1. The user interface should allow authorized users to create new amendments.\n2. The system should store and display the history of amendments for each record.\n\n## Non-Functional Requirements\n- Data integrity and security should be maintained when handling amendments.\n\n## Integrations (boundaries)\n- The functionality should integrate with the existing user interface and database management.\n\n## Test Plan\nGIVEN the user has the necessary permissions to add amendments\nWHEN the user creates a new amendment\nTHEN the new amendment is correctly recorded in the system.\n\n## Tasks\n1. If users can manage amendments, make the functionality show up on screen. "
+  }
+]{% endraw %}
+```
+
+### Draft:
+
+"""
+{{story}}
+"""
