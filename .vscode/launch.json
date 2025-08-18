@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
             "args": [
-                "tests/data/story11.md",
+                "tests/data/story3.md",
                 "--output-file", "tests/output/results.json",
                 "--format", "json",
                 "--log-level", "DEBUG",

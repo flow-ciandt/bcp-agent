@@ -19,14 +19,8 @@ Evaluate the complexity of each interface element provided by the user.
     - A static element is a simple input that does not affect other elements when it changes.
     - A dynamic element affects other elements on the screen when it changes.
 
-2. **Calculate Scores**:
-    - For static elements, count the total number and calculate the score using:
-      `Statistics = ROUNDUP(<sum of static elements> / 5) * 3`
-    - For dynamic elements, count the total number and calculate the score using:
-      `Dynamics = ROUNDUP(<sum of dynamic elements> / 5) * 5`
-
-3. **Provide Output**:
-    - Provide the consolidated rationale for your calculations always in the next example format: "Static elements: 8. Calculation: ROUNDUP(8 / 5) * 3 = 6. Dynamic elements: 4. Calculation: ROUNDUP(4 / 5) * 5 = 5. Final Score: 11.".
+2. **Provide Output**:
+    - Provide the consolidated rationale for your calculations always in the next example format: "Static elements: 8. Dynamic elements: 4.
     - Output the result in the specified JSON format.
 
 ## Format
@@ -35,9 +29,8 @@ The output must be in a valid JSON, following format:
 
 ```json
 {% raw %}{
-  "step": "Interface",
-  "description": "Static elements: 8. Calculation: ROUNDUP(8 / 5) * 3 = 6. Dynamic elements: 4. Calculation: ROUNDUP(4 / 5) * 5 = 5. Final Score: 11.",
-  "total": 11
+  "Static": <number of identified static elements>,
+  "Dynamic": <number of identified dynamic elements>,
 }{% endraw %}
 ```
 
@@ -56,21 +49,11 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 3. Interface for displaying feedback to users upon successful import of issues into the system. (Static)
 4. Interface for presenting generic error messages to the user during the import process. (Static)
 
-**Total estimation**:
-
-- Static elements: 4
-- Calculation: `ROUNDUP(4 / 5) * 3 = 3`
-
 ### Example 2
 
 **Interface Elements to be Created or Changed**:
 
 1. Create a new error message interface that displays generic, user-friendly error messages. (Static)
-
-**Total estimation**:
-
-- Static elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 3 = 3`
 
 ### Example 3
 
@@ -78,32 +61,17 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 
 1. Create an element to upload an image, based on drag and drop. (Static)
 
-**Total estimation**:
-
-- Static elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 3 = 3`
-
 ### Example 4
 
 **Interface Elements to be Created or Changed**:
 
 1. Tracking an element to be considered in an analytic system. (Static)
 
-**Total estimation**:
-
-- Static elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 3 = 3`
-
 ### Example 5
 
 **Interface Elements to be Created or Changed**:
 
 1. Feature toggle to enable or disable a feature. (Static)
-
-**Total estimation**:
-
-- Static elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 3 = 3`
 
 ### Example 6
 
@@ -112,14 +80,6 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 1. Any display information that needs to be updated, once we already have the value, is considered static. (Static)
 2. Create a grid. (Static)
 3. Section modification based on information, is considered dynamic. (Dynamic)
-
-**Total estimation**:
-
-- Static elements: 2
-- Calculation: `ROUNDUP(2 / 5) * 3 = 3`
-- Dynamic elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 5 = 5`
-- **Final Score**: 2
 
 # user:
 

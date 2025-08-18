@@ -7,6 +7,7 @@ of user stories using a series of predefined prompts and GPT-4o.
 
 import json
 import logging
+import math
 import os
 from typing import Dict, Any, List
 
@@ -177,14 +178,35 @@ class BCPCalculator:
                 
                 # If this is a required step (4-6), add to BCP calculation
                 if step["required"] and step["name"] != "Break Elements":
-                    if "total" in response:
+                    step_logger.debug(f"Response:\n {json.dumps(response)}")
+                    total_bcp = 0
+                    match step["name"]:
+                        case "External Integrations Complexity":
+                            for boundary in response:
+                                boundary_size = boundary.get("Size", "")
+                                match boundary_size:
+                                    case "XS":
+                                        total_bcp += 1
+                                    case "S":
+                                        total_bcp += 2
+                                    case "M":
+                                        total_bcp += 3
+                                    case "XL":
+                                        total_bcp += 8
+                        case "UI Elements Complexity":
+                            total_bcp += math.ceil(response.get("Static", 0) / 5) * 3
+                            total_bcp += math.ceil(response.get("Dynamic", 0) / 5) * 5
+                        case "Business Rules Complexity":
+                            for rule in response:
+                                total_bcp += rule.get("Score", 0)
+
+                    if total_bcp > 0:
                         component_name = step["name"].replace(" Complexity", "")
-                        results["breakdown"][component_name] = response["total"]
-                        results["total_bcp"] += response["total"]
-                        step_logger.info(f"Added {response['total']} points to BCP")
+                        results["breakdown"][component_name] = total_bcp
+                        results["total_bcp"] += total_bcp
                     else:
-                        step_logger.warning(f"No 'total' field found in response: {response}")
-                
+                        step_logger.warning(f"No BCP value found in response: {response}")
+
             except Exception as e:
                 step_logger.error(f"Error processing step: {str(e)}")
                 results["steps"][step_name] = {"error": str(e)}

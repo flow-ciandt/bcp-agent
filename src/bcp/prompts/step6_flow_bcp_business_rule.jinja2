@@ -50,7 +50,6 @@ Score: 1.
 
 **Rule 1**: Total score for all steps: 8
 **Rule 2**: Total score: 2
-**Total**: 10
 
 ### Final Instructions
 
@@ -60,13 +59,16 @@ Score: 1.
 
 ### Result Format
 
+Use the following description template to format for each logical rule identified:
 ```json
 {% raw %}{
-   "step": "Business",
-   "description": "description",
-   "total": total
+  "Rule": <sequential number>
+  "Summary": <summary that describe the logical rule>
+  "Score": <logical rule score>
 }{% endraw %}
 ```
+
+The output must be a valid JSON with an array of logical rules according the template above.
 
 IMPORTANT: Use double quotes only in the beginning and end of text fields. Generate only one occurrence of each field, listing all the rules in the description field and the total score in the field total.
 
