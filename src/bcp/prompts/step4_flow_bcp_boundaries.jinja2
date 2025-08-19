@@ -48,25 +48,21 @@ The Complexity Sizes of Boundaries and their Points can be determined by the fol
     "Complexity Item": "Boundaries",
     "Size Definition": "DB and/or UI or do not cross boundaries (self-contained) or not identified.\n\nOwnership:\nType: Full ownership.\nDescription: The system completely owns the data and interactions, with no external dependencies.\n\nValidity:\nType: Internal validation.\nDescription: Validations are performed within the system, ensuring data integrity without external checks.\n\nDurability:\nType: Persistent.\nDescription: Information is stored and maintained within the system for future access.",
     "Size": "XS",
-    "Complexity Points": 1
   },
   {
     "Complexity Item": "Boundaries",
     "Size Definition": "Reading, writing, exchanging information with a phisical device.\n\nOwnership:\nType: Shared ownership.\nDescription: The system shares ownership with a physical device, requiring clear delineation of responsibilities.\n\nValidity:\nType: Device-based validation.\nDescription: Validations might involve checks with the physical device to ensure accuracy (e.g., confirming a successful read from a card reader).\n\nDurability:\nType: Temporary to semi-permanent.\nDescription: Information exchanged may be temporary (e.g., a single transaction) or stored for a limited time.",
     "Size": "S",
-    "Complexity Points": 2
   },
   {
     "Complexity Item": "Boundaries",
     "Size Definition": "Remote Business Services exchanging perennial information.\n\nOwnership:\nType: Distributed ownership.\nDescription: Multiple systems might own parts of the data, necessitating clear agreements on data management and updates.\n\nValidity:\nType: Cross-system validation.\nDescription: Validity checks may involve multiple systems, ensuring that data exchanged is accurate and consistent across services.\n\nDurability:\nType: Long-lasting.\nDescription: Information is intended to be stored and referenced over an extended period, often requiring version control and updates.",
     "Size": "M",
-    "Complexity Points": 3
   },
   {
     "Complexity Item": "Boundaries",
     "Size Definition": "Remote Business Service with ethereal exchange information.\n\nOwnership:\nType: Transient ownership.\nDescription: Ownership is fleeting, with data passed through various systems without long-term responsibility.\n\nValidity:\nType: Minimal validation.\nDescription: Validations are often limited or absent, as the information is not retained or relied upon for future interactions.\n\nDurability:\nType: Ephemeral.\nDescription: Information exchanged is temporary and not stored, meaning it exists only briefly for immediate processing.\n",
     "Size": "XL",
-    "Complexity Points": 8
   }
 ]
 
@@ -89,28 +85,18 @@ Based on the story in three double quotes below, identify all the Boundaries as 
 
 Use the following description template to format for each boundary identified:
 ```json
-{
-  "Boundaries": <sequential number>
+{% raw %}{
+  "Boundary": <sequential number>
   "Summary": <summary that identifies the boundaries>
-  "Total Elements": <total number of boundaries>
   "Size": <complexity size>
-  "Points": <points corresponding to the complexity size>
-}
+}{% endraw %}
 ```
 
 If non-existent, provide a description explaining that no boundaries were identified.
 
 ### Result Format:
 
-The output must be in a valid JSON, following format:
-
-```json
-{% raw %}{
-  "step": "External Integration",
-  "description": <summary that identifies the boundaries>
-  "total": <total number of boundaries. Return 1 if there is no boundaries>
-}{% endraw %}
-```
+The output must be a valid JSON with an array of boundaries according the template above.
 
 ### Analyze the following story:
 

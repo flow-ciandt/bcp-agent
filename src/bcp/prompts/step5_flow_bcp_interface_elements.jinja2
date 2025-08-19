@@ -20,13 +20,13 @@ Evaluate the complexity of each interface element provided by the user.
     - A dynamic element affects other elements on the screen when it changes.
 
 2. **Calculate Scores**:
-    - For static elements, count the total number and calculate the score using:
-      `Statistics = ROUNDUP(<sum of static elements> / 5) * 3`
-    - For dynamic elements, count the total number and calculate the score using:
-      `Dynamics = ROUNDUP(<sum of dynamic elements> / 5) * 5`
+    - For static elements, count the total number of static elements:
+      `Statistics = <sum of static elements>`
+    - For dynamic elements, count the total number of dynamic elements:
+      `Dynamics = <sum of dynamic elements>`
 
 3. **Provide Output**:
-    - Provide the consolidated rationale for your calculations always in the next example format: "Static elements: 8. Calculation: ROUNDUP(8 / 5) * 3 = 6. Dynamic elements: 4. Calculation: ROUNDUP(4 / 5) * 5 = 5. Final Score: 11.".
+    - Provide the consolidated rationale for your calculations always in the next example format: "Static elements: 8. Dynamic elements: 4.
     - Output the result in the specified JSON format.
 
 ## Format
@@ -35,9 +35,8 @@ The output must be in a valid JSON, following format:
 
 ```json
 {% raw %}{
-  "step": "Interface",
-  "description": "Static elements: 8. Calculation: ROUNDUP(8 / 5) * 3 = 6. Dynamic elements: 4. Calculation: ROUNDUP(4 / 5) * 5 = 5. Final Score: 11.",
-  "total": 11
+  "Static": <number of static elements>,
+  "Dynamic": <number of dynamic elements>,
 }{% endraw %}
 ```
 
@@ -59,8 +58,6 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 **Total estimation**:
 
 - Static elements: 4
-- Calculation: `ROUNDUP(4 / 5) * 3 = 3`
-
 ### Example 2
 
 **Interface Elements to be Created or Changed**:
@@ -70,7 +67,6 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 **Total estimation**:
 
 - Static elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 3 = 3`
 
 ### Example 3
 
@@ -81,7 +77,6 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 **Total estimation**:
 
 - Static elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 3 = 3`
 
 ### Example 4
 
@@ -92,7 +87,6 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 **Total estimation**:
 
 - Static elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 3 = 3`
 
 ### Example 5
 
@@ -103,7 +97,6 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 **Total estimation**:
 
 - Static elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 3 = 3`
 
 ### Example 6
 
@@ -116,10 +109,7 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 **Total estimation**:
 
 - Static elements: 2
-- Calculation: `ROUNDUP(2 / 5) * 3 = 3`
 - Dynamic elements: 1
-- Calculation: `ROUNDUP(1 / 5) * 5 = 5`
-- **Final Score**: 2
 
 # user:
 
