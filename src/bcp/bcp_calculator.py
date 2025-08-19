@@ -115,11 +115,11 @@ class BCPCalculator:
                     step_logger.debug(f"Using boundaries section: {variables["elements"]}")
                     # If no elements found, set default response
                     if not variables["elements"]:
-                        response = {
-                            "step": "External Integration",
-                            "description": "There is no external integration detected",
-                            "total": 1
-                        }
+                        response = [{
+                            "Boundary": 1,
+                            "Summary": "There is no external integration detected",
+                            "Size": "XS"
+                        }]
                 
                 elif step["name"] == "UI Elements Complexity" and elements:
                     # Extract interface elements section from elements

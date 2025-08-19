@@ -61,14 +61,29 @@ Score: 1.
 
 Use the following description template to format for each logical rule identified:
 ```json
-{% raw %}{
-  "Rule": <sequential number>
-  "Summary": <summary that describe the logical rule>
-  "Score": <logical rule score>
-}{% endraw %}
+{
+  "Rule": sequential number,
+  "Summary": "summary that describe the logical rule",
+  "Score": logical rule score number
+}
 ```
 
-The output must be a valid JSON with an array of logical rules according the template above.
+The output must be a valid JSON with an array of logical rules according the template above. Example:
+
+```json
+[
+  {
+    "Rule": 1,
+    "Summary": "Evaluate the complexity of all steps in a rule before assigning a final score.",
+    "Score": 8
+  },
+  {
+    "Rule": 2,
+    "Summary": "Consider the overall context and interactions between sub-steps.",
+    "Score": 2
+  }
+]
+```
 
 IMPORTANT: Use double quotes only in the beginning and end of text fields. Generate only one occurrence of each field, listing all the rules in the description field and the total score in the field total.
 
