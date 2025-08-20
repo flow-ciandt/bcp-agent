@@ -7,6 +7,12 @@ anthropic>=0.8.0
 jinja2>=3.1.2
 python-dotenv>=1.0.0
 
+# API dependencies
+fastapi>=0.103.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+requests>=2.28.0
+
 # Analysis and visualization dependencies
 pandas>=2.0.0
 matplotlib>=3.5.0

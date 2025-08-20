@@ -1,6 +1,6 @@
 # BCP Calculator
 
-A command-line tool for calculating Business Complexity Points (BCP) of user stories using LangChain with support for multiple LLM providers (OpenAI GPT-4o-2024-05-13 and Anthropic Claude).
+A tool for calculating Business Complexity Points (BCP) of user stories using LangChain with support for multiple LLM providers (OpenAI GPT-4o-2024-05-13 and Anthropic Claude).
 
 ## Overview
 
@@ -37,12 +37,23 @@ The application orchestrates a flow through 6 predefined prompt steps:
    
    Then edit the `.env` file to add your API keys for the providers you want to use (OpenAI and/or Anthropic).
 
-## Usage
+## Integration Options
+
+The BCP Calculator can be used in four different ways:
+
+1. **[Command Line Interface (CLI)](docs/usage/cli_usage.md)** - Use as a traditional command-line tool
+2. **[HTTP API](docs/usage/http_api_usage.md)** - Run as a RESTful API service
+3. **[Model Completion Provider (MCP)](docs/usage/mcp_usage.md)** - Use with Claude Code as a specialized agent
+4. **[Python SDK](docs/usage/sdk_usage.md)** - Import and use as a Python library
+
+Choose the integration option that best fits your workflow. Click the links above for detailed usage instructions for each option.
+
+## Basic CLI Usage
 
 Run the BCP Calculator with a user story file:
 
 ```
-python main.py path/to/user_story.md
+python run_cli.py path/to/user_story.md
 ```
 
 ### Options
@@ -52,59 +63,7 @@ python main.py path/to/user_story.md
 - `--provider`: LLM provider to use (openai or claude). Default is openai.
 - `--format`: Output format (text or json). Default is json.
 
-### Examples
-
-#### Basic Usage
-
-Process a user story with the default provider (OpenAI):
-
-```bash
-python main.py tests/data/story1.md
-```
-
-#### Using Different Providers
-
-Process with OpenAI (explicitly):
-
-```bash
-python main.py tests/data/story1.md --provider openai
-```
-
-Process with Claude:
-
-```bash
-python main.py tests/data/story1.md --provider claude
-```
-
-#### Saving Results
-
-Save the results to a JSON file:
-
-```bash
-python main.py tests/data/story1.md --output-file results.json
-```
-
-Save results in text format:
-
-```bash
-python main.py tests/data/story1.md --format text --output-file results.txt
-```
-
-#### Detailed Logging
-
-Run with detailed debug logs:
-
-```bash
-python main.py tests/data/story1.md --log-level DEBUG
-```
-
-#### Complete Example
-
-Process a story with Claude, save as text with detailed logs:
-
-```bash
-python main.py tests/data/story1.md --provider claude --format text --output-file claude_results.txt --log-level DEBUG
-```
+For more detailed CLI usage information, see the [CLI Usage Guide](docs/usage/cli_usage.md).
 
 ## Output
 
@@ -151,9 +110,15 @@ The output includes:
 ## Project Structure
 
 ### Core Application Files
-- `main.py`: Entry point wrapper for the CLI application
+- `run_cli.py`: Entry point wrapper for the CLI application
+- `run_api_server.py`: HTTP API server launcher
+- `run_mcp_server.py`: MCP server launcher
+- `run_comparison.py`: Tool for comparing BCP results between different providers
 - `src/main.py`: Main CLI implementation
-- `src/bcp/`: Core package containing all BCP calculator functionality
+- `src/api/`: HTTP API implementation
+- `src/mcp/`: MCP implementation
+- `src/sdk/`: SDK implementation
+- `src/bcp/`: Core package containing BCP calculator functionality
   - `__init__.py`: Package exports
   - `bcp_calculator.py`: Core logic for orchestrating the flow
   - `prompt_handler.py`: Handle loading and processing prompts
@@ -167,9 +132,11 @@ The output includes:
 - `tests/compare_providers.py`: Script to compare results between providers
 
 ### Documentation
-- `docs/`: Directory containing usage guides and documentation
-
-### Documentation
+- `docs/usage/`: Directory containing usage guides for each integration option
+  - `cli_usage.md`: CLI usage guide
+  - `http_api_usage.md`: HTTP API usage guide
+  - `mcp_usage.md`: MCP usage guide
+  - `sdk_usage.md`: SDK usage guide
 - `README.md`: Project documentation
 - `LICENSE`: License information
 

@@ -112,7 +112,7 @@ class BCPCalculator:
                             variables["elements"] = ", ".join(str(b) for b in boundaries)
                         else:
                             variables["elements"] = str(boundaries)
-                    step_logger.debug(f"Using boundaries section: {variables["elements"]}")
+                    step_logger.debug(f"Using boundaries section: {variables['elements']}")
                     # If no elements found, set default response
                     if not variables["elements"]:
                         response = [{
@@ -133,7 +133,7 @@ class BCPCalculator:
                         if "Test Plan" in elements:
                             interface_elements['Test Plan'] = elements.get('Test Plan')
                         variables["elements"] = json.dumps(interface_elements, indent=2).replace("'", "").replace('"', "")
-                    step_logger.debug(f"Using interface section: {variables["elements"]}")
+                    step_logger.debug(f"Using interface section: {variables['elements']}")
                     # If no elements found, set default response
                     if not variables["elements"]:
                         response = {
@@ -154,7 +154,7 @@ class BCPCalculator:
                         if "Test Plan" in elements:
                             business_elements['Test Plan'] = elements.get('Test Plan')
                         variables["elements"] = json.dumps(business_elements, indent=2).replace("'", "").replace('"', "")
-                    step_logger.debug(f"Using business section: {variables["elements"]}")
+                    step_logger.debug(f"Using business section: {variables['elements']}")
                     # If no elements found, set default response
                     if not variables["elements"]:
                         response = {
@@ -180,25 +180,53 @@ class BCPCalculator:
                 if step["required"] and step["name"] != "Break Elements":
                     step_logger.debug(f"Response:\n {json.dumps(response)}")
                     total_bcp = 0
+                    
+                    # Check if response is a string, which indicates parsing error
+                    if isinstance(response, str):
+                        step_logger.warning(f"Response is a string, not a parsed object: {response}")
+                        response = {"raw_response": response}
+                    
+                    if isinstance(response, dict) and "raw_response" in response:
+                        step_logger.warning("Using raw_response as fallback")
+                        # Skip BCP calculation for this step
+                        continue
+                        
                     match step["name"]:
                         case "External Integrations Complexity":
+                            # Make sure response is a list
+                            if not isinstance(response, list):
+                                step_logger.warning(f"Expected list for boundaries but got {type(response)}")
+                                continue
+                                
                             for boundary in response:
-                                boundary_size = boundary.get("Size", "")
-                                match boundary_size:
-                                    case "XS":
-                                        total_bcp += 1
-                                    case "S":
-                                        total_bcp += 2
-                                    case "M":
-                                        total_bcp += 3
-                                    case "XL":
-                                        total_bcp += 8
+                                if isinstance(boundary, dict):
+                                    boundary_size = boundary.get("Size", "")
+                                    match boundary_size:
+                                        case "XS":
+                                            total_bcp += 1
+                                        case "S":
+                                            total_bcp += 2
+                                        case "M":
+                                            total_bcp += 3
+                                        case "XL":
+                                            total_bcp += 8
                         case "UI Elements Complexity":
+                            # Make sure response is a dict
+                            if not isinstance(response, dict):
+                                step_logger.warning(f"Expected dict for UI Elements but got {type(response)}")
+                                continue
+                                
                             total_bcp += math.ceil(response.get("Static", 0) / 5) * 3
                             total_bcp += math.ceil(response.get("Dynamic", 0) / 5) * 5
                         case "Business Rules Complexity":
+                            # Make sure response is a list
+                            if not isinstance(response, list):
+                                step_logger.warning(f"Expected list for Business Rules but got {type(response)}")
+                                continue
+                                
                             for rule in response:
-                                total_bcp += rule.get("Score", 0)
+                                if isinstance(rule, dict):
+                                    total_bcp += rule.get("Score", 0)
 
                     if total_bcp > 0:
                         component_name = step["name"].replace(" Complexity", "")
