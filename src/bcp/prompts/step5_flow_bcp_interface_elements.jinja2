@@ -16,17 +16,21 @@ Evaluate the complexity of each interface element provided by the user.
 
 1. **Identify Element Type**:
     - Determine if each interface element is static or dynamic.
-    - A static element is a simple input that does not affect other elements when it changes.
-    - A dynamic element affects other elements on the screen when it changes.
+    - A static element is a simple input that does not affect other elements when it changes. Examples of static field: date, input, button to call an action, label that receive value from a service, description of anything, description based on a value, loading elements, change element color, select field, select button, select action, interative to call an action.
+    - A dynamic element affects other elements on the screen when it changes. For example a filter for a table.
 
-2. **Calculate Scores**:
-    - For static elements, count the total number of static elements:
+2. **List Elements**:
+    - Static elements: Generate a list of static elements found
+    - Dynamic elements: Generate a list of dynamic elements found
+
+3. **Calculate Scores**:
+    - For static elements, count the total number:
       `Statistics = <sum of static elements>`
-    - For dynamic elements, count the total number of dynamic elements:
+    - For dynamic elements, count the total number:
       `Dynamics = <sum of dynamic elements>`
 
-3. **Provide Output**:
-    - Provide the consolidated rationale for your calculations always in the next example format: "Static elements: 8. Dynamic elements: 4.
+4. **Provide Output**:
+    - Provide the consolidated rationale for your calculations always in the next example format: "Static elements: 8. Dynamic elements: 4.".
     - Output the result in the specified JSON format.
 
 ## Format
@@ -34,15 +38,19 @@ Evaluate the complexity of each interface element provided by the user.
 The output must be in a valid JSON, following format:
 
 ```json
-{% raw %}{
-  "Static": <number of static elements>,
-  "Dynamic": <number of dynamic elements>,
-}{% endraw %}
+{
+  "step": "Interface",
+  "description": "Static elements: 8. Dynamic elements: 4.",
+  "Static Elements List": "List of static elements found",
+  "Dynamic Elements List": "List of dynamic elements found",
+  "Static": <sum of static elements>,
+  "Dynamic": <sum of dynamic elements>
+}
 ```
 
 Ensure to use double quotes only at the beginning and end of text fields. Generate only one occurrence of each field, listing all the rules in the description field and the total score in the total field.
 
-Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field values
+Remove all quotes (“, ”, ", ‘, ’, ' or `) inside the text of field values
 
 ## Examples
 
@@ -58,6 +66,7 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 **Total estimation**:
 
 - Static elements: 4
+
 ### Example 2
 
 **Interface Elements to be Created or Changed**:
@@ -115,8 +124,4 @@ Remove all quotes (“, ”, ", ‘, ’, ' or \`) inside the text of field valu
 
 Consider the list of elements below.
 
-{% if elements and elements.strip() %}
 {{elements}}
-{% else %}
-No elements found.
-{% endif %}

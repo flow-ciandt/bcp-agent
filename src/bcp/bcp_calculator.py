@@ -132,7 +132,7 @@ class BCPCalculator:
                             interface_elements['Acceptance Criteria'] = ", ".join(str(b) for b in elements["Acceptance Criteria"])
                         if "Test Plan" in elements:
                             interface_elements['Test Plan'] = elements.get('Test Plan')
-                        variables["elements"] = json.dumps(interface_elements, indent=2).replace("'", "").replace('"', "")
+                        variables["elements"] = json.dumps(interface_elements, ensure_ascii=False, indent=2).replace("'", "").replace('"', "")
                     step_logger.debug(f"Using interface section: {variables['elements']}")
                     # If no elements found, set default response
                     if not variables["elements"]:
@@ -153,7 +153,7 @@ class BCPCalculator:
                             business_elements['Requirements and Business Rules'] = elements.get('Requirements and Business Rules')
                         if "Test Plan" in elements:
                             business_elements['Test Plan'] = elements.get('Test Plan')
-                        variables["elements"] = json.dumps(business_elements, indent=2).replace("'", "").replace('"', "")
+                        variables["elements"] = json.dumps(business_elements, ensure_ascii=False, indent=2).replace("'", "").replace('"', "")
                     step_logger.debug(f"Using business section: {variables['elements']}")
                     # If no elements found, set default response
                     if not variables["elements"]:
@@ -178,7 +178,7 @@ class BCPCalculator:
                 
                 # If this is a required step (4-6), add to BCP calculation
                 if step["required"] and step["name"] != "Break Elements":
-                    step_logger.debug(f"Response:\n {json.dumps(response)}")
+                    step_logger.debug(f"Response:\n {json.dumps(response, ensure_ascii=False)}")
                     total_bcp = 0
                     
                     # Check if response is a string, which indicates parsing error

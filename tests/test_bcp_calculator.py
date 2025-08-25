@@ -59,6 +59,7 @@ def main():
     csv_header = ["story"]
     for i in range(args.executions):
         csv_header += [f"business_exec_{i+1}", f"interface_exec_{i+1}", f"integration_exec_{i+1}", f"total_bcp_exec_{i+1}"]
+        csv_header += [f"business_rules_{i+1}", f"interface_elements_{i+1}", f"boundaries_{i+1}"]
     
     output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
     os.makedirs(output_path, exist_ok=True)
@@ -90,6 +91,9 @@ def main():
                 total_bcp_list.append(results.get('breakdown', {}).get('UI Elements', ''))
                 total_bcp_list.append(results.get('breakdown', {}).get('External Integrations', ''))
                 total_bcp_list.append(results.get('total_bcp', ''))
+                total_bcp_list.append(results.get('steps', {}).get('Business Rules Complexity', ''))
+                total_bcp_list.append(results.get('steps', {}).get('UI Elements Complexity', ''))
+                total_bcp_list.append(results.get('steps', {}).get('External Integrations Complexity', ''))
 
             # Save results
             output_file = os.path.join(
@@ -97,7 +101,7 @@ def main():
                 f"{os.path.splitext(story_file)[0]}_results.json"
             )
             with open(output_file, 'w', encoding='utf-8') as file:
-                json.dump(results_list, file, indent=2)
+                json.dump(results_list, file, indent=2, ensure_ascii=False)
             logger.info(f"Results saved to {output_file}")
 
         except Exception as e:
