@@ -8,10 +8,10 @@
             "name": "Python: main.py",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/main.py",
+            "program": "${workspaceFolder}/run_cli.py",
             "console": "integratedTerminal",
             "args": [
-                "tests/data/story3.md",
+                "tests/data/story6.md",
                 "--output-file", "tests/output/results.json",
                 "--format", "json",
                 "--log-level", "DEBUG",
