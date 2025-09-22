@@ -11,11 +11,11 @@
             "program": "${workspaceFolder}/run_cli.py",
             "console": "integratedTerminal",
             "args": [
-                "tests/data/story6.md",
+                "tests/data/story1.md",
                 "--output-file", "tests/output/results.json",
                 "--format", "json",
                 "--log-level", "DEBUG",
-                "--provider", "openai"
+                "--provider", "flow"
             ]
         }
     ]
