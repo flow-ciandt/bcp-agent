@@ -7,12 +7,17 @@ This module provides a unified interface for different LLM providers.
 import os
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional, Union
+from typing import Dict, Any, Optional, Union, List, Iterator
 
 from langchain.schema import StrOutputParser
 from langchain.schema.language_model import BaseLanguageModel
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
+from langchain_core.language_models import BaseChatModel
+from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
+from langchain_core.pydantic_v1 import Field, root_validator
+from langchain_core.runnables import RunnableLambda
+import requests
 
 
 class LLMProvider(ABC):
@@ -83,11 +88,11 @@ class OpenAIProvider(LLMProvider):
 
 class ClaudeProvider(LLMProvider):
     """Anthropic Claude provider implementation."""
-    
+
     def __init__(self, logger: logging.Logger, model_name: str = "claude-3-sonnet-20240229-v1:0", temperature: float = 0):
         """
         Initialize the Claude provider.
-        
+
         Args:
             logger: The logger instance
             model_name: The name of the Claude model to use
@@ -97,38 +102,236 @@ class ClaudeProvider(LLMProvider):
         self.model_name = model_name
         self.temperature = temperature
         self.logger.info(f"Initialized Claude provider with model {model_name}")
-    
+
     def get_model(self) -> BaseLanguageModel:
         """
         Get the Claude model.
-        
+
         Returns:
             The Claude model
         """
         return ChatAnthropic(model=self.model_name, temperature=self.temperature)
 
 
+class FlowChatModel(BaseChatModel):
+    """Custom implementation for Flow's Chat Completions API."""
+
+    # Define required fields for this chat model
+    base_url: str
+    flow_tenant: Optional[str]
+    flow_agent: Optional[str]
+    model_name: str
+    temperature: float
+    max_tokens: int
+    api_key: Optional[str]
+
+    class Config:
+        """Configuration for this pydantic object."""
+        arbitrary_types_allowed = True
+        extra = "forbid"
+
+    @root_validator()
+    def validate_environment(cls, values: Dict) -> Dict:
+        """Validate that the environment is properly set up."""
+        # Set default values if not provided
+        values["model_name"] = values.get("model_name") or "gpt-4o-mini"
+        values["temperature"] = values.get("temperature") or 0.0
+        values["max_tokens"] = values.get("max_tokens") or 4096
+        values["base_url"] = values.get("base_url") or "https://flow.ciandt.com/ai-orchestration-api/v1/openai"
+
+        return values
+
+    def _llm_type(self) -> str:
+        """Return type of LLM."""
+        return "flow"
+
+    def _convert_messages_to_flow_format(self, messages: List[BaseMessage]) -> List[Dict[str, Any]]:
+        """Convert LangChain messages to Flow API format."""
+        flow_messages = []
+        for message in messages:
+            if message.type == "human":
+                flow_messages.append({"role": "user", "content": message.content})
+            elif message.type == "ai":
+                flow_messages.append({"role": "assistant", "content": message.content})
+            elif message.type == "system":
+                flow_messages.append({"role": "system", "content": message.content})
+            else:
+                flow_messages.append({"role": "user", "content": str(message.content)})
+        return flow_messages
+
+    def _generate(
+        self, messages: List[BaseMessage], stop: Optional[List[str]] = None, **kwargs: Any
+    ) -> Dict[str, Any]:
+        """Generate completion from Flow API."""
+        flow_messages = self._convert_messages_to_flow_format(messages)
+
+        headers = {
+            "Content-Type": "application/json",
+            "accept": "application/json"
+        }
+
+        # Get primitive values from Field objects
+        flow_tenant = self.flow_tenant
+        flow_agent = self.flow_agent
+        api_key = self.api_key
+        base_url = self.base_url
+        max_tokens = self.max_tokens
+        temperature = self.temperature
+        model_name = self.model_name
+
+        # Add Flow-specific headers if available
+        if flow_tenant:
+            headers["FlowTenant"] = flow_tenant
+        if flow_agent:
+            headers["FlowAgent"] = flow_agent
+
+        # Add API key if available
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
+
+        url = f"{base_url}/ai-orchestration-api/v1/openai/chat/completions"
+
+        payload = {
+            "stream": False,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "allowedModels": [model_name],
+            "messages": flow_messages
+        }
+
+        # Add stop sequences if provided
+        if stop:
+            payload["stop"] = stop
+
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            data = response.json()
+
+            # Extract the assistant's message from the response
+            if "choices" in data and len(data["choices"]) > 0:
+                message_content = data["choices"][0]["message"]["content"]
+                from langchain_core.outputs import ChatGeneration, ChatResult
+                from langchain_core.messages import AIMessage
+
+                # Create a ChatGeneration object
+                chat_generation = ChatGeneration(message=AIMessage(content=message_content))
+
+                # Return a ChatResult
+                return ChatResult(generations=[chat_generation])
+            else:
+                raise ValueError("No message content found in response")
+        except Exception as e:
+            raise RuntimeError(f"Error calling Flow API: {str(e)}")
+
+    def _stream(
+        self, messages: List[BaseMessage], stop: Optional[List[str]] = None, **kwargs: Any
+    ) -> Iterator[Dict[str, Any]]:
+        """Stream completion from Flow API (not implemented)."""
+        raise NotImplementedError("Streaming not implemented for FlowChatModel")
+
+
+class FlowProvider(LLMProvider):
+    """Flow provider implementation."""
+
+    def __init__(self,
+                 logger: logging.Logger,
+                 model_name: str = "gpt-4o-mini",
+                 temperature: float = 0,
+                 max_tokens: int = 4096):
+        """
+        Initialize the Flow provider.
+
+        Args:
+            logger: The logger instance
+            model_name: The name of the Flow model to use
+            temperature: The temperature parameter for the model
+            max_tokens: Maximum tokens to generate
+        """
+        super().__init__(logger)
+        self.model_name = model_name
+        self.temperature = temperature
+        self.max_tokens = max_tokens
+        self.base_url = os.environ.get("FLOW_BASE_URL")
+        self.flow_tenant = os.environ.get("FLOW_TENANT", "flowteam")
+        self.flow_agent = os.environ.get("FLOW_AGENT", "bcp-opensource")
+        self.api_key = self._get_flow_token()
+        self.logger.info(f"Initialized Flow provider with model {model_name}")
+
+    def _get_flow_token(self) -> str:
+        """
+        Retrieve a new Flow token.
+
+        Returns:
+            The Flow API token
+        """
+        headers = {
+            "accept": "/",
+            "Content-Type": "application/json",
+            "FlowTenant": "flowteam",
+        }
+
+        payload = {
+            "clientId": os.environ.get("FLOW_CLIENT_ID"),
+            "clientSecret": os.environ.get("FLOW_CLIENT_SECRET"),
+            "appToAccess": "llm-api"
+        }
+
+        url = f"{self.base_url}/auth-engine-api/v1/api-key/token"
+
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            data = response.json()
+
+        except Exception as e:
+            raise RuntimeError(f"Error calling Flow API: {str(e)}")
+
+        return data.get("access_token")
+
+    def get_model(self) -> BaseLanguageModel:
+        """
+        Get the Flow model.
+
+        Returns:
+            The Flow model
+        """
+        return FlowChatModel(
+            base_url=self.base_url,
+            model_name=self.model_name,
+            flow_tenant=self.flow_tenant,
+            flow_agent=self.flow_agent,
+            temperature=self.temperature,
+            max_tokens=self.max_tokens,
+            api_key=self.api_key
+        )
+
+
 def get_provider(provider_name: str, logger: logging.Logger) -> LLMProvider:
     """
     Get the LLM provider based on the provider name.
-    
+
     Args:
-        provider_name: The name of the provider ('openai' or 'claude')
+        provider_name: The name of the provider ('openai', 'claude', or 'flow')
         logger: The logger instance
-        
+
     Returns:
         The LLM provider
-        
+
     Raises:
         ValueError: If the provider name is not supported
     """
     provider_name = provider_name.lower()
-    
+
     if provider_name == "openai":
         model_name = os.environ.get("OPENAI_MODEL_NAME", "gpt-4o-2024-05-13")
         return OpenAIProvider(logger, model_name=model_name)
     elif provider_name == "claude":
         model_name = os.environ.get("ANTHROPIC_MODEL_NAME", "claude-3-sonnet-20240229-v1:0")
         return ClaudeProvider(logger, model_name=model_name)
+    elif provider_name == "flow":
+        model_name = os.environ.get("FLOW_MODEL_NAME", "gpt-4o-mini")
+        max_tokens = int(os.environ.get("FLOW_MAX_TOKENS", "4096"))
+        return FlowProvider(logger, model_name=model_name, max_tokens=max_tokens)
     else:
         raise ValueError(f"Unsupported provider: {provider_name}")

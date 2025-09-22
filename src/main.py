@@ -48,7 +48,7 @@ def parse_arguments():
     parser.add_argument(
         "--provider",
         type=str,
-        choices=["openai", "claude"],
+        choices=["openai", "claude", "flow"],
         default="openai",
         help="LLM provider to use (default: openai)"
     )
