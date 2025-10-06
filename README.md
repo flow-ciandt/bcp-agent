@@ -60,7 +60,7 @@ python run_cli.py path/to/user_story.md
 
 - `--log-level`: Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL). Default is INFO.
 - `--output-file`: Path to save the output results. If not provided, results are printed to stdout.
-- `--provider`: LLM provider to use (openai or claude). Default is openai.
+- `--provider`: LLM provider to use (openai, claude, flow-openai or flow-bedrock). Default is openai.
 - `--format`: Output format (text or json). Default is json.
 
 For more detailed CLI usage information, see the [CLI Usage Guide](docs/usage/cli_usage.md).
