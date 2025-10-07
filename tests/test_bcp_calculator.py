@@ -58,6 +58,7 @@ def main():
     csv_rows = []
     csv_header = ["story"]
     for i in range(args.executions):
+        csv_header += [f"story_category_{i+1}"]
         csv_header += [f"business_exec_{i+1}", f"interface_exec_{i+1}", f"integration_exec_{i+1}", f"total_bcp_exec_{i+1}"]
         csv_header += [f"business_rules_{i+1}", f"interface_elements_{i+1}", f"boundaries_{i+1}"]
     
@@ -87,6 +88,7 @@ def main():
                 logger.info(f"Breakdown: {results['breakdown']}")
 
                 # total_bcp_list.append(results.get('total_bcp', ''))
+                total_bcp_list.append(results.get('steps', {}).get('Non Functional Detector', {}).get('raw_response', ''))
                 total_bcp_list.append(results.get('breakdown', {}).get('Business Rules', ''))
                 total_bcp_list.append(results.get('breakdown', {}).get('UI Elements', ''))
                 total_bcp_list.append(results.get('breakdown', {}).get('External Integrations', ''))
