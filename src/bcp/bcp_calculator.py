@@ -34,6 +34,11 @@ class BCPCalculator:
         # Define the steps in the BCP calculation process
         self.steps = [
             {
+                "name": "Non Functional Detector",
+                "prompt_file": "step0_flow_bcp_non_functional_detector.jinja2",
+                "required": False  # Not used for BCP calculation, but for additional analysis
+            },
+            {
                 "name": "Story Maturity Complexity",
                 "prompt_file": "step1_flow_story_maturity_complexity.jinja2",
                 "required": False  # Not used for BCP calculation, but for additional analysis
