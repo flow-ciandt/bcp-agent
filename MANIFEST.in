@@ -1,0 +1,24 @@
+# Include prompt templates
+include src/bcp/prompts/*.jinja2
+
+# Include documentation
+include README.md
+include LICENSE
+include docs/*.md
+include docs/usage/*.md
+
+# Include example files
+include tests/data/*.md
+
+# Include environment example
+include .env.example
+
+# Exclude specific files
+exclude .env
+exclude .git*
+exclude .vscode/*
+exclude venv/*
+exclude __pycache__/*
+exclude *.pyc
+exclude */__pycache__/*
+exclude */*.pyc
