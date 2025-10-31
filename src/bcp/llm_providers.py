@@ -9,15 +9,15 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional, Union, List, Iterator
 
-from langchain.schema import StrOutputParser
-from langchain.schema.language_model import BaseLanguageModel
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.language_models import BaseLanguageModel
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, AIMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
-from langchain_core.pydantic_v1 import Field, root_validator
 from langchain_core.runnables import RunnableLambda
+from pydantic import Field, model_validator
 import requests
 
 
@@ -131,7 +131,7 @@ class FlowChatModel(BaseChatModel):
         arbitrary_types_allowed = True
         extra = "forbid"
 
-    @root_validator()
+    @model_validator(mode='before')
     def validate_environment(cls, values: Dict) -> Dict:
         """Validate that the environment is properly set up."""
         # Set default values if not provided
@@ -327,7 +327,7 @@ class FlowBedrockChatModel(BaseChatModel):
         arbitrary_types_allowed = True
         extra = "forbid"
 
-    @root_validator()
+    @model_validator(mode='before')
     def validate_environment(cls, values: Dict) -> Dict:
         """Validate that the environment is properly set up."""
         # Set default values if not provided

@@ -11,8 +11,7 @@ import re
 from typing import Dict, Any, Optional
 
 from jinja2 import Template
-from langchain.prompts import PromptTemplate
-from langchain.schema import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser
 
 from .llm_providers import LLMProvider, get_provider
 
