@@ -19,5 +19,6 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "tests/unit", "tests/integration"]
 python_files = "test_*.py"
+addopts = "--cov=src --cov-report=term-missing"
