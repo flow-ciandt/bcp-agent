@@ -17,23 +17,33 @@ Before using the MCP server, make sure you have:
    ```
    Then edit the `.env` file to add your API keys for the providers you want to use (OpenAI and/or Anthropic).
 
-## Starting the MCP Server
+## Starting the MCP Server (stdio)
 
-You can start the MCP server using the provided script:
+You can start the MCP server locally using stdio transport:
 
 ```bash
 python run_mcp_server.py
 ```
 
-Once started, you can use a MCP client to interact with the server.
+This mode is useful for desktop clients that spawn the server process.
 
-## MCP Client Example
+## Starting the MCP Server (Streamable HTTP)
 
-Here is a simple example of how to use a MCP client to send a user story to the MCP server and receive the calculated BCP.
+To run the MCP server as a standalone HTTP service (remote-friendly):
 
-### MCP Client Configuration
+```bash
+python run_mcp_http_server.py --host 0.0.0.0 --port 51617
+```
 
-You can configure MCP clients like continue.dev or copilot chat to call the bcp calculation tool adding something like this to the MCP configuration file:
+Notes:
+- Allowed origins default to "*". You can override with `--allowed-origins` or `MCP_ALLOWED_ORIGINS`.
+- The server uses the same provider API keys as the CLI.
+
+## MCP Client Examples
+
+### Stdio Client Configuration
+
+Configure MCP clients (e.g., continue.dev) to call the BCP tool via stdio:
 
 ```json
     "bcp": {
@@ -47,3 +57,7 @@ You can configure MCP clients like continue.dev or copilot chat to call the bcp 
         "type": "stdio"
     }
 ```
+
+### HTTP Client Usage
+
+For HTTP clients, point them to the MCP HTTP server URL. Specific configuration varies by client; consult your MCP client documentation. A common approach is using the MCP Inspector to connect to `http://localhost:51617`.
