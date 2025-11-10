@@ -19,17 +19,18 @@ class BCPCalculator:
     Calculator for Business Complexity Points (BCP) of user stories.
     """
     
-    def __init__(self, logger: logging.Logger, provider_name: str = "openai"):
+    def __init__(self, logger: logging.Logger, provider_name: str = "openai", prompt_handler: PromptHandler | None = None):
         """
         Initialize the BCP calculator.
         
         Args:
             logger: The logger instance
             provider_name: The name of the LLM provider to use ('openai' or 'claude')
+            prompt_handler: Optional PromptHandler to enable dependency injection for testing
         """
         self.logger = logger
         self.provider_name = provider_name
-        self.prompt_handler = PromptHandler(logger, provider_name=provider_name)
+        self.prompt_handler = prompt_handler or PromptHandler(logger, provider_name=provider_name)
         
         # Define the steps in the BCP calculation process
         self.steps = [

@@ -1,0 +1,14 @@
+[run]
+branch = True
+source = 
+    src
+
+[report]
+omit = 
+    src/bcp/llm_providers.py
+    */tests/*
+show_missing = True
+skip_covered = True
+
+[html]
+directory = htmlcov
