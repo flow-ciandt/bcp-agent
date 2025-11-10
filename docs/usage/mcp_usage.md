@@ -15,7 +15,11 @@ Before using the MCP server, make sure you have:
    ```bash
    cp .env.example .env
    ```
-   Then edit the `.env` file to add your API keys for the providers you want to use (OpenAI and/or Anthropic).
+   Then edit the `.env` file to add your API keys for the providers you want to use. Supported providers:
+   - OpenAI: set OPENAI_API_KEY and optional OPENAI_MODEL_NAME
+   - Anthropic (Claude): set ANTHROPIC_API_KEY and optional ANTHROPIC_MODEL_NAME
+   - Flow OpenAI: set FLOW_BASE_URL, FLOW_CLIENT_ID, FLOW_CLIENT_SECRET, optional FLOW_TENANT, FLOW_AGENT, FLOW_MODEL_NAME
+   - Flow Bedrock: set FLOW_BASE_URL, FLOW_CLIENT_ID, FLOW_CLIENT_SECRET, optional FLOW_TENANT, FLOW_AGENT, FLOW_BEDROCK_MODEL_NAME, FLOW_BEDROCK_MAX_TOKENS, FLOW_BEDROCK_TEMPERATURE
 
 ## Starting the MCP Server (stdio)
 
@@ -37,7 +41,7 @@ python run_mcp_http_server.py --host 0.0.0.0 --port 51617
 
 Notes:
 - Allowed origins default to "*". You can override with `--allowed-origins` or `MCP_ALLOWED_ORIGINS`.
-- The server uses the same provider API keys as the CLI.
+- Provider configuration is read from `.env` by default. Set BCP_PROVIDER to one of: openai | claude | flow-openai | flow-bedrock. MCP requests can optionally override provider and credentials per-call using the tool arguments.
 
 ## MCP Client Examples
 
