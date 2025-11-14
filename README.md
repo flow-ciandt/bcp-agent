@@ -43,7 +43,7 @@ The BCP Calculator can be used in five different ways:
 
 1. **[Command Line Interface (CLI)](docs/usage/cli_usage.md)** - Use as a traditional command-line tool
 2. **[HTTP API](docs/usage/http_api_usage.md)** - Run as a RESTful API service
-3. **[Model Context Protocol (MCP)](docs/usage/mcp_usage.md)** - Use with Claude Code or any MCP client (stdio or streamable HTTP)
+3. **[Model Context Protocol (MCP)](docs/usage/mcp_usage.md)** - Use with any MCP client (stdio or streamable HTTP)
 4. **[Python SDK](docs/usage/sdk_usage.md)** - Import and use as a Python library
 5. **[MCP Server](docs/usage/mcp_usage.md)** - Run the MCP as a standalone server (stdio or HTTP transport)
 
